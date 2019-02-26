@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-wrapper red darken-4">
+        <a href="/" class="brand-logo">Friend Finder</a>
+      </div>
+    </nav>
+    <div class="row">
+    <div class="col m8">
+    <div class="card">
+    <div class="card-content">
+    <span class="card-title">Survey</span>
+    <div class="row">
+      <div class="input-field col s6">
+        <input id="name" type="text" class="validate">
+        <label for="name">Name (required)</label>
+      </div>
+    </div>
+    <div class="row">
+      <div class="input-field col s6">
+        <input id="image" type="text" class="validate">
+        <label for="image">Image Url (required)</label>
+      </div>
+    </div>
+    <div id="survey">
+      <h6> Answer each question on a scale of 1-5 (1 being strongly dislikle and 5 being strongly like)</h6>
+    </div>
+    <button class="btn waves-effect waves-light" id="submit" type="submit" name="action">Submit
+      <i class="material-icons right">send</i>
+    </button> 
+    </div>
+    </div>
+    </div>
+    </div>
+  
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+    $(document).ready(function() {
+      $.get("api/questions", function(data) {
+        for(var i = 0; i < data.length; i++){
+          $('#survey').append(`
+           <div style="margin: auto;">
+            <h5>${data[i]}</h5>
+            <select>
+              <option value="" disabled selected>Choose your option</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          `)              
+        }
+        }).then(function(){
+          var instance = $('select').formSelect(); 
+          $('#submit').on('click', function(){
+            var name = $('#name').val();
+            var image = $('#image').val();
+            var scores = []; 
+            for (var i = 0; i <instance.length; i++){
+              scores.push(instance[i].value);
+            }
+            
+            $.post("api/questions", function({"name": name, "photo": image, "scores": scores}){});
+
+          }); 
+        });
+        })         
+    
+    </script>
+    
+  </body>
+</html> 
